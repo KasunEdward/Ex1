@@ -9,6 +9,7 @@ defmodule Ex1.Supervisor do
 
   def init(arg) do
     children = [
+      Ex1.Repo
       {Ex1.AdminServer, name: __MODULE__}
     ]
 
