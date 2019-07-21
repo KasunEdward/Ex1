@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :myd,
+config :ex1,
   ecto_repos: [Ex1.Repo]
 
 config :ex1, Ex1.Repo,
