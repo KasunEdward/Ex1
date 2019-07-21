@@ -5,13 +5,25 @@ defmodule Ex1.AdminServer do
 
   # Client Functions
 
-  def start_link(opts) do
+  def start_link(_opts) do
     GenServer.start_link(__MODULE__,[],name: __MODULE__)
   end
 
   def hello() do
     IO.puts("inside fun")
     GenServer.call(__MODULE__, {:hello})
+  end
+
+  def add_user(name,age) do
+    user= %Ex1.User{name: name, age: age,status: 99}
+    changeset =Ex1.User.changeset(user,%{})
+    case Ex1.Repo.insert(changeset) do
+      {:ok, _new_user} ->
+        IO.puts("user inserted successfully")
+      {:error, _error} ->
+        IO.puts("error")
+    end
+
   end
 
   # Server Functions
