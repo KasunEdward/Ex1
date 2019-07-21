@@ -1,6 +1,6 @@
 defmodule Ex1.AdminServer do
   @moduledoc false
-  @ten_seconds 20000
+  @ten_seconds 60000
   require Ecto.Query
 
 
