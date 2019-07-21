@@ -1,5 +1,8 @@
 defmodule Ex1.AdminServer do
   @moduledoc false
+  @ten_seconds 20000
+  require Ecto.Query
+
 
   use GenServer
 
@@ -23,25 +26,44 @@ defmodule Ex1.AdminServer do
       {:error, _error} ->
         IO.puts("error")
     end
-
   end
 
   # Server Functions
 
   @impl true
   def init(_opts) do
+    # Process.send_after(self(), :update_user, @ten_seconds)
+    :timer.apply_after(@ten_seconds, :gen_server, :cast, [self(), :update_user])
     {:ok, %{}}
   end
 
+  # @impl true
+  # def handle_info(:update_user, state) do
+  #   IO.puts("Updating user")
+  #   Process.send_after(self(), :update_user, @ten_seconds)
+  #   {:noreply, state}
+  # end
+
+  # @impl true
+  # def handle_info(_msg,  state) do
+  #   {:reply, :ok, state}
+  # end
   @impl true
-  def handle_call(:hello, _from, state) do
-    IO.puts("hello world")
+  def handle_call(_msg, _from, state) do
     {:reply, :ok, state}
   end
 
   @impl true
-  def handle_call(_msg, _from, state) do
-    {:reply, :ok, state}
+  def handle_cast(:update_user, state) do
+    IO.puts("Updating user")
+    # users = Ex1.User |> Ecto.Query.where(status: 99) |> Ex1.Repo.all
+    # changeset = Ex1.User.changeset(users, %{status: 1})
+    # Ex1.Repo.update(changeset)
+    result = Ecto.Query.from(u in Ex1.User, where: u.status == 99, update: [set: [status: 1]])
+    |> Ex1.Repo.update_all([])
+    IO.inspect(result)
+    :timer.apply_after(@ten_seconds, :gen_server, :cast, [self(), :update_user])
+    {:noreply, state}
   end
 
   @impl true
